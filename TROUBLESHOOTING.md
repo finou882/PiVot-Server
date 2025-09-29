@@ -10,9 +10,27 @@
 ```
 error: Microsoft Visual C++ 14.0 is required
 fatal error: 'portaudio.h' file not found
+ImportError: /home/pi/miniconda3/lib/libstdc++.so.6: version `GLIBCXX_3.4.32' not found
+Could not import the PyAudio C module 'pyaudio._portaudio'
 ```
 
 **解決方法:**
+
+#### Conda環境での競合問題:
+```bash
+# 問題診断
+python3 check_audio.py
+
+# 自動修復を試す
+bash fix_pyaudio.sh
+
+# または、システムPythonを使用
+conda deactivate
+/usr/bin/python3 main.py
+
+# システムPyAudioをインストール
+sudo apt install -y python3-pyaudio portaudio19-dev
+```
 
 #### Raspberry Pi / Linux:
 ```bash
@@ -96,6 +114,8 @@ python3 main.py
 ```
 Connection refused to Windows PC
 Could not detect Windows PC IP
+ARP table scan failed: [Errno 2] No such file or directory: 'arp'
+DeprecationWarning: There is no current event loop
 ```
 
 **解決方法:**
@@ -111,11 +131,22 @@ python main.py
 
 #### Raspberry Pi側:
 ```bash
+# 更新されたnetwork_setup.pyを使用
+python3 network_setup.py
+
 # IP アドレスを手動設定
-echo "WINDOWS_PC_IP=192.168.1.100" > config.env
+nano config.py
+# WINDOWS_PC_IP = "192.168.68.xxx" に変更
 
 # ネットワークテスト
-python3 test_cross_platform.py
+python3 test_connection.py
+
+# ARPコマンド不足の場合
+sudo apt install net-tools
+
+# または直接接続テスト
+ping 192.168.68.xxx  # Windows PCのIP
+curl http://192.168.68.xxx:8000/health
 ```
 
 ### 5. 権限エラー
